@@ -10,19 +10,21 @@ mainClock = pygame.time.Clock()
 # Set up the window.
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 720
+
+
 size = (WINDOWWIDTH, WINDOWHEIGHT)
 screen = pygame.display.set_mode(size)
 
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
 pygame.display.set_caption('movement/testing_grounds OuO')
 
-zona1 = pygame.image.load("sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
+zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
 zona1 = pygame.transform.scale(zona1, (1280, 720))
 
-zona2 = pygame.image.load("sprites/WIP/zona_2/zona_2_unfinished.png").convert_alpha()
+zona2 = pygame.image.load("Sprites/WIP/zona_2/zona_2_unfinished.png").convert_alpha()
 zona2 = pygame.transform.scale(zona2, (1280, 720))
 
-zona1_1 = pygame.image.load("sprites/WIP/zona_1_1/zona_1_1_unfinished.gif").convert_alpha()
+zona1_1 = pygame.image.load("Sprites/WIP/zona_1_1/zona_1_1_unfinished.gif").convert_alpha()
 zona1_1 = pygame.transform.scale(zona1_1, (1280, 720))
 
 # Set up the colors.
@@ -116,7 +118,7 @@ while True:
                 sys.exit()
 
 
-    if player.rect.left <= 0:
+    if player.rect.left == 0:
         currentArea += 1
         player.rect.right = WINDOWWIDTH
     elif player.rect.right >= WINDOWWIDTH and currentArea != 0:
