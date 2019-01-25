@@ -1,5 +1,6 @@
 import pygame, sys, random
 from pygame.locals import *
+from settings import *
 import playerObject, gameObjects
 import os
 
@@ -7,16 +8,11 @@ import os
 pygame.init()
 mainClock = pygame.time.Clock()
 
-# Set up the window.
-WINDOWWIDTH = 1280
-WINDOWHEIGHT = 720
-
-
 size = (WINDOWWIDTH, WINDOWHEIGHT)
 screen = pygame.display.set_mode(size)
 
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
-pygame.display.set_caption('movement/testing_grounds OuO')
+pygame.display.set_caption(TITLE)
 
 zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
 zona1 = pygame.transform.scale(zona1, (1280, 720))
@@ -26,14 +22,6 @@ zona2 = pygame.transform.scale(zona2, (1280, 720))
 
 zona1_1 = pygame.image.load("Sprites/WIP/zona_1_1/zona_1_1_unfinished.gif").convert_alpha()
 zona1_1 = pygame.transform.scale(zona1_1, (1280, 720))
-
-# Set up the colors.
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-YEET = (255, 255, 0)
 
 #Set up assets
 """EXEMPLO DE COMO DAR PROPER LOAD DE IMAGENS PARA PYGAME (OPTIMIZACAO)>>>
@@ -71,10 +59,25 @@ windowSurface.fill(YEET)
 
 """grupo de sprites, adicionar o objeto a este grupo como esta exemplificado no player,
 ATENCAO VER PLAYER CLASS E COMO ESTA DECLARADA, IMPORTANTE PARA FUNCIONAR"""
-
 all_sprites = pygame.sprite.Group()
 rocks = pygame.sprite.Group()
 keys = pygame.sprite.Group()
+doors = pygame.sprite.Group()
+walls = pygame.sprite.Group()
+
+door1 = gameObjects.Door()
+all_sprites.add(door1)
+doors.add(door1)
+
+wall = gameObjects.Wall()
+all_sprites.add(wall)
+walls.add(wall)
+wall.rect.top = door1.rect.bottom
+
+wall2 = gameObjects.Wall()
+all_sprites.add(wall2)
+walls.add(wall2)
+wall2.rect.bottom = door1.rect.top
 
 yellowKey = gameObjects.Key()
 all_sprites.add(yellowKey)
@@ -118,20 +121,41 @@ while True:
                 sys.exit()
 
 
-    if player.rect.left == 0:
+    if player.has_KEY == True:
+        door1.kill()
+        player.has_KEY = False
+
+    if player.rect.left <= 0:
         currentArea += 1
         player.rect.right = WINDOWWIDTH
     elif player.rect.right >= WINDOWWIDTH and currentArea != 0:
         currentArea -= 1
         player.rect.left = 0
 
+
     #update
     all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
 
     #check for colisions here
-    hits = pygame.sprite.spritecollide(player, rocks, False)
+    if pygame.sprite.spritecollide(player, rocks, False): #escadas?
+        player.rect.x -= PLAYERSPEED
+        player.rect.y -= PLAYERSPEED
+
+    if pygame.sprite.spritecollide(player, doors, False):
+        player.rect.x += PLAYERSPEED
+
+    hits = pygame.sprite.spritecollide(player, keys, True)
     if hits:
-        rock.moveRelative(player)
+        player.has_KEY = True
+        #hits[0].kill()
+
+    hits = pygame.sprite.spritecollide(player, walls, False)
+    if hits:
+        if hits[0].rect.x > WINDOWWIDTH /2:
+            player.rect.x -= PLAYERSPEED
+        else:
+            player.rect.x += PLAYERSPEED
+
     #Draw the ALL SPRITES on surface.
     if currentArea <= 0:
         screen.blit(zona1,(0,0))
@@ -147,4 +171,5 @@ while True:
 
     # commit render
     pygame.display.flip()
-    mainClock.tick(60)
+    mainClock.tick(FPS)
+    dlt = mainClock.tick(FPS) / 1000
