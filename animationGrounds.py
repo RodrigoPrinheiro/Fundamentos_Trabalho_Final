@@ -14,8 +14,8 @@ screen = pygame.display.set_mode(size)
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
 pygame.display.set_caption(TITLE)
 
-zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
-zona1 = pygame.transform.scale(zona1, (1280, 720))
+#zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
+#zona1 = pygame.transform.scale(zona1, (1280, 720))
 
 zona2 = pygame.image.load("Sprites/WIP/zona_2/zona_2_unfinished.png").convert_alpha()
 zona2 = pygame.transform.scale(zona2, (1280, 720))
@@ -76,8 +76,38 @@ rock = gameObjects.Rock()
 all_sprites.add(rock)
 rocks.add(rock)
 
-player = playerObject.Player(screen)
+player = playerObject.Player()
+all_sprites.add(player)
 
+class Animation:
+    def __init__(self):
+        self.images=pygame.image.load("Sprites/res/resDown.png")
+        self.images = pygame.transform.scale(self.images, (1144, 52))
+        660
+        self.nImg=22 #number of sprites
+        self.cImg=0 #current sprite
+
+        self.x= 200
+        self.y= 200
+
+        self.w = 52 
+        self.h = 52
+
+    def update(self):
+        if self.cImg >=self.nImg-1:
+            self.cImg = 0
+        else:
+            self.cImg+= 1
+
+
+    def render(self,screen):
+        # reminder: pygame.Rect(WINDOWWIDTH-400, WINDOWHEIGHT -950, 130, 100)
+        
+        #pygame.draw.rect(screen,RED,self.rect)
+        screen.blit(self.images,(self.x,self.y),(self.cImg*self.w,0,self.w,self.h))
+
+
+animation = Animation()
 
 
 # Run the game loop.
@@ -131,20 +161,23 @@ while True:
 
     #Draw the ALL SPRITES on surface.
     if currentArea <= 0:
-        screen.blit(zona1,(0,0))
+        windowSurface.fill(BLUE)
     elif currentArea == 1:
-        screen.blit(zona1_1,(0,0))
+        windowSurface.fill(BLUE)
     elif currentArea == 2:
         screen.blit(zona2,(0,0))
     else:
-        windowSurface.fill(GREEN)
+        windowSurface.fill(BLUE)
 
     all_sprites.draw(windowSurface)
     """screen.blit(zona1_1,(0,0),(cImage*w,0,w,h))"""
 
+
+    animation.update()
+    animation.render(screen)
+
     # commit render
-    player.update()
-    
     pygame.display.flip()
     mainClock.tick(FPS)
     dlt = mainClock.tick(FPS) / 1000
+

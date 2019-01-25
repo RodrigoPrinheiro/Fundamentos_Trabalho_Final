@@ -4,17 +4,27 @@ from settings import *
 #TUDO DO JOGADOR ENCONTRA SE AQUI, CLASS, ONDE SE IMPORTA O SPRITE ETC...
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,screen):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("Sprites/res/resDown.png").convert_alpha() #SPRITE SHEET é suposto ser overwritten for now
-        self.image = pygame.image.load("Sprites/WIP/res/resStill.png").convert_alpha() #load sprite image here plz
-        self.image = pygame.transform.scale(self.image, (52, 52)) # mudar o tamanho do sprite, 52x52 looks good to me
-        self.rect = self.image.get_rect()#tirar um rectangulo do sprite
+        
+        self.image=pygame.image.load("Sprites/res/resDown.png")
+        self.image = pygame.transform.scale(self.image, (1144, 52))
+        
+        self.imageStill=pygame.image.load("Sprites/res/resStill.png")
+        self.imageStill = pygame.transform.scale(self.imageStill, (52, 52))
+
+        self.screen=screen
+  
+        self.nImg=22 #number of sprites
+        self.cImg=0 #current sprite
+
+        self.w = 52 #sprite size x
+        self.h = 52 #sprite size y
+
+        self.rect = self.imageStill.get_rect()#tirar um rectangulo do sprite
         self.rect.center = (50, 50)
         self.has_KEY = False
 
-    def animation(self):
-        print('.')
 
     def update(self):
         keystate = pygame.key.get_pressed()
@@ -31,3 +41,14 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom > WINDOWHEIGHT:
             self.rect.bottom = WINDOWHEIGHT
+
+        #ANIMATION vvvvvvvvvvvvvvvv
+        if keystate[pygame.K_LEFT] == True or keystate[pygame.K_RIGHT] == True or keystate[pygame.K_UP] == True or keystate[pygame.K_DOWN] == True:
+        
+            if self.cImg >=self.nImg-1:
+                self.cImg = 0
+            else:
+                self.cImg+= 1
+
+        self.screen.blit(self.image,self.rect,(self.cImg*self.w,0,self.w,self.h))
+
