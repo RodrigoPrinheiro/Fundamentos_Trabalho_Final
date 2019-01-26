@@ -76,7 +76,7 @@ all_sprites.add(wall2)
 walls.add(wall2)
 wall2.rect.bottom = door1.rect.top
 
-yellowKey = gameObjects.Key()
+yellowKey = gameObjects.Key(screen)
 all_sprites.add(yellowKey)
 keys.add(yellowKey)
 
@@ -85,6 +85,13 @@ all_sprites.add(rock)
 rocks.add(rock)
 
 player = playerObject.Player(screen)
+
+
+stalker_1=gameObjects.Stalker(screen)
+stalker_1.rect.center = (300,WINDOWHEIGHT-270)
+
+stalker_2=gameObjects.Stalker(screen)
+stalker_2.rect.center = (WINDOWWIDTH - 100,100)
 
 
 
@@ -103,7 +110,7 @@ while True:
 
     if PLAYERSPEED > 0 and PLAYERSPEED < 0:
         walkSound.play()
-    if player.has_KEY == True:
+    if player.has_KEY == True: 
         door1.kill()
         doorSound.play()
         player.has_KEY = False
@@ -121,7 +128,15 @@ while True:
             
     #check for colisions here
     if pygame.sprite.spritecollide(player, rocks, False):
-        player.rect.y -= PLAYERSPEED
+        player.rect.y -= 75
+        #INSERT FALLSOUND.PLAY
+
+    #inimigos a cair tb############
+    if pygame.sprite.spritecollide(stalker_1, rocks, False):
+        stalker_1.rect.y -= 75
+
+    #if mais inimigos oof do this 
+    ###############################
         
     if pygame.sprite.spritecollide(player, doors, False):
         player.rect.x += PLAYERSPEED
@@ -131,12 +146,12 @@ while True:
         player.has_KEY = True
         #hits[0].kill()
 
-    hits = pygame.sprite.spritecollide(player, walls, False)
-    if hits:
-        if hits[0].rect.x > WINDOWWIDTH /2:
-            player.rect.x -= PLAYERSPEED
-        else:
-            player.rect.x += PLAYERSPEED
+    #hits = pygame.sprite.spritecollide(player, walls, False)
+    #if hits:
+        #if hits[0].rect.x > WINDOWWIDTH /2:
+            #player.rect.x -= PLAYERSPEED
+        #else:
+            #player.rect.x += PLAYERSPEED
 
     #Draw the ALL SPRITES on surface.
     if currentArea <= 0:
@@ -148,11 +163,18 @@ while True:
     else:
         windowSurface.fill(GREEN)
 
-    all_sprites.draw(windowSurface)
-    """screen.blit(zona1_1,(0,0),(cImage*w,0,w,h))"""
+    #all_sprites.draw(windowSurface)
 
     # commit render
     player.update()
+
+    stalker_1.update(player,FPS)
+    stalker_2.update(player,FPS)
+
+    if player.has_KEY == True:
+        yellowKey.exists = False      
+    if yellowKey.exists == True:
+        yellowKey.updateSprite()
     
     pygame.display.flip()
     mainClock.tick(FPS)
