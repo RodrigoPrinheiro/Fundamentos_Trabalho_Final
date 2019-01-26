@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT] and self.rect.x >= 10:
             self.rect.x -= PLAYERSPEED
-        if keystate[pygame.K_RIGHT] and self.rect.x <= WINDOWWIDTH - 20:
+        if keystate[pygame.K_RIGHT] and self.rect.x <= WINDOWWIDTH - self.w - 20:
             self.rect.x += PLAYERSPEED
         if keystate[pygame.K_UP] and self.rect.y >= 70:
             self.rect.y -= PLAYERSPEED
