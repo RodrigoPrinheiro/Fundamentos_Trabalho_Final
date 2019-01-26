@@ -14,6 +14,9 @@ screen = pygame.display.set_mode(size)
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
 pygame.display.set_caption(TITLE)
 
+music = pygame.mixer.music.load('Sounds/bgmusic.wav')
+pygame.mixer.music.play(-1)
+
 zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
 zona1 = pygame.transform.scale(zona1, (1280, 720))
 
@@ -98,12 +101,12 @@ while True:
         door1.kill()
         player.has_KEY = False
 
-    if player.rect.left <= 0:
+    if player.rect.left <= 0 and player.rect.top < 260 and player.rect.top > 200:
         currentArea += 1
-        player.rect.right = WINDOWWIDTH
+        player.rect.right = WINDOWWIDTH -1
     elif player.rect.right >= WINDOWWIDTH and currentArea != 0:
         currentArea -= 1
-        player.rect.left = 0
+        player.rect.left = 1
 
 
     #update

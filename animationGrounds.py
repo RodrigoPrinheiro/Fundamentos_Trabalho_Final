@@ -83,7 +83,6 @@ class Animation:
     def __init__(self):
         self.images=pygame.image.load("Sprites/res/resDown.png")
         self.images = pygame.transform.scale(self.images, (1144, 52))
-        660
         self.nImg=22 #number of sprites
         self.cImg=0 #current sprite
 
