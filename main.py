@@ -14,8 +14,6 @@ screen = pygame.display.set_mode(size)
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
 pygame.display.set_caption(TITLE)
 
-music = pygame.mixer.music.load('Sounds/bgmusic.wav')
-pygame.mixer.music.play(-1)
 
 zona1 = pygame.image.load("Sprites/WIP/zona_1/zona_1_unfinished.png").convert_alpha()
 zona1 = pygame.transform.scale(zona1, (1280, 720))
@@ -25,6 +23,12 @@ zona2 = pygame.transform.scale(zona2, (1280, 720))
 
 zona1_1 = pygame.image.load("Sprites/WIP/zona_1_1/zona_1_1_unfinished.gif").convert_alpha()
 zona1_1 = pygame.transform.scale(zona1_1, (1280, 720))
+
+#music/sounds
+music = pygame.mixer.music.load('Sounds/bgmusic.wav')
+pygame.mixer.music.play(-1)
+doorSound = pygame.mixer.Sound('Sounds/door.wav')
+walkSound = pygame.mixer.Sound('Sounds/walk.wav')
 
 #Set up assets
 """EXEMPLO DE COMO DAR PROPER LOAD DE IMAGENS PARA PYGAME (OPTIMIZACAO)>>>
@@ -99,24 +103,23 @@ while True:
 
     if player.has_KEY == True:
         door1.kill()
+        doorSound.play()
         player.has_KEY = False
 
-    if player.rect.left <= 0 and player.rect.top < 260 and player.rect.top > 200:
-        currentArea += 1
-        player.rect.right = WINDOWWIDTH -1
-    elif player.rect.right >= WINDOWWIDTH and currentArea != 0:
-        currentArea -= 1
-        player.rect.left = 1
-
-
+    if player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
+        currentArea = 2
+        player.rect.right = WINDOWWIDTH -1 - player.w
+    elif player.rect.right >= WINDOWWIDTH - 20  and player.rect.top < 259 and player.rect.top > 0 and currentArea != 0:
+        currentArea = 0 
+        player.rect.left = 80
+    
     #update
     all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
 
     #check for colisions here
-    if pygame.sprite.spritecollide(player, rocks, False): #escadas?
-        player.rect.x -= PLAYERSPEED
-        player.rect.y -= PLAYERSPEED
-
+    if pygame.sprite.spritecollide(player, rocks, False): #buracos/objectos com que o jogador pode colidir
+        PLAYERSPEED = 0
+        
     if pygame.sprite.spritecollide(player, doors, False):
         player.rect.x += PLAYERSPEED
 

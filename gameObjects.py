@@ -6,7 +6,7 @@ from settings import *
 class Door(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10,1500))
+        self.image = pygame.Surface((40,500))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.center = (0, 0)
@@ -30,7 +30,8 @@ class Wall(pygame.sprite.Sprite):
 class Rock(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50,50))
+        self.image = pygame.Surface((1000,50))
         self.image.fill(GREY)
         self.rect = self.image.get_rect()
-        self.rect.center = (750, 530)
+        self.rect.center = (20, 260)
+        
