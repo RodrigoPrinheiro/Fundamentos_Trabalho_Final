@@ -28,6 +28,7 @@ zona1_1 = pygame.transform.scale(zona1_1, (1280, 720))
 music = pygame.mixer.music.load('Sounds/bgmusic.wav')
 pygame.mixer.music.play(-1)
 doorSound = pygame.mixer.Sound('Sounds/door.wav')
+#not working
 walkSound = pygame.mixer.Sound('Sounds/walk.wav')
 
 #Set up assets
@@ -100,7 +101,8 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-
+    if PLAYERSPEED > 0 and PLAYERSPEED < 0:
+        walkSound.play()
     if player.has_KEY == True:
         door1.kill()
         doorSound.play()
@@ -112,13 +114,14 @@ while True:
     elif player.rect.right >= WINDOWWIDTH - 20  and player.rect.top < 259 and player.rect.top > 0 and currentArea != 0:
         currentArea = 0 
         player.rect.left = 80
+        player.rect.top = 150
     
     #update
     all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
-
+            
     #check for colisions here
-    if pygame.sprite.spritecollide(player, rocks, False): #buracos/objectos com que o jogador pode colidir
-        PLAYERSPEED = 0
+    if pygame.sprite.spritecollide(player, rocks, False):
+        player.rect.y -= PLAYERSPEED
         
     if pygame.sprite.spritecollide(player, doors, False):
         player.rect.x += PLAYERSPEED
