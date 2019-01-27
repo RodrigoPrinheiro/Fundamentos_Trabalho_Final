@@ -1,4 +1,4 @@
-TITLE = "Testing Grounds"
+TITLE = "Rescaldo"
 
 # Set up the colors.
 BLACK = (0, 0, 0)

@@ -33,6 +33,7 @@ thumpSound = pygame.mixer.Sound('Sounds/fall.wav')
 shotHitWallSound = pygame.mixer.Sound('Sounds/hitWall.wav')
 speedSound = pygame.mixer.Sound('Sounds/speed.wav')
 areaChange = pygame.mixer.Sound('Sounds/areaChange.wav')
+stalkerKill = pygame.mixer.Sound('Sounds/stalkerKill.wav')
 
 # Set up variables.
 moveLeft = False
@@ -128,9 +129,11 @@ rocksR.add(rockR3)
 rockR3.rect.topleft = (1020,245)
 
 stalker_1 = gameObjects.Stalker(screen)
-stalker_1.rect.center = (250,WINDOWHEIGHT-140)
+stalker_1.rect.center = (500,WINDOWHEIGHT-140)
 stalker_2 = gameObjects.Stalker(screen)
 stalker_2.rect.center = (WINDOWWIDTH - 100,100)
+stalker_3 = gameObjects.Stalker(screen)
+stalker_3.rect.center = (WINDOWWIDTH - 100,WINDOWHEIGHT-140)
 
 plant = gameObjects.Decor(screen,FPS)
 plant2 = gameObjects.Decor(screen,FPS)
@@ -225,12 +228,6 @@ while True:
             if event.key == K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-
-
-    if player.has_KEY == True: 
-        door1.kill()
-        doorSound.play()
-        player.has_KEY = False
         
     if currentArea == 0 and player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
         currentArea = 2
@@ -246,7 +243,10 @@ while True:
     
     #update
     #all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
-
+    if player.has_KEY == True: 
+            door1.kill()
+            doorSound.play()
+            player.has_KEY = False
 
     #TEMP.
     if currentArea <= 0:
@@ -254,7 +254,8 @@ while True:
 
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
         #check for colisions here
-        if pygame.sprite.spritecollide(player, rocksU, False):
+        
+        '''if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksD, False):
@@ -265,9 +266,9 @@ while True:
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
-            thumpSound.play()
+            thumpSound.play()'''
         
-        #inimigos a colidir com buracos tb############
+        #inimigos a colidir com buracos e player############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
             stalker_1.rect.y -= 15
         if pygame.sprite.spritecollide(stalker_1, rocksD, False):
@@ -277,14 +278,36 @@ while True:
         if pygame.sprite.spritecollide(stalker_1, rocksR, False):
             stalker_1.rect.x -= 15    
             
-        if pygame.sprite.spritecollide(stalker_1, rocksU, False):
+        if pygame.sprite.spritecollide(stalker_2, rocksU, False):
             stalker_2.rect.y -= 15
-        if pygame.sprite.spritecollide(stalker_1, rocksD, False):
+        if pygame.sprite.spritecollide(stalker_2, rocksD, False):
             stalker_2.rect.y += 15
         if pygame.sprite.spritecollide(stalker_2, rocksL, False):
             stalker_2.rect.x += 15
         if pygame.sprite.spritecollide(stalker_2, rocksR, False):
-            stalker_2.rect.x -= 15  
+            stalker_2.rect.x -= 15
+
+        if pygame.sprite.spritecollide(stalker_3, rocksU, False):
+            stalker_3.rect.y -= 15
+        if pygame.sprite.spritecollide(stalker_3, rocksD, False):
+            stalker_3.rect.y += 15
+        if pygame.sprite.spritecollide(stalker_3, rocksL, False):
+            stalker_3.rect.x += 15
+        if pygame.sprite.spritecollide(stalker_3, rocksR, False):
+            stalker_3.rect.x -= 15
+
+
+        if player.rect.colliderect(stalker_1.rect) or player.rect.colliderect(stalker_2.rect):
+            delay = 0
+            pygame.mixer.music.pause()
+            stalkerKill.play()
+            while True:
+                print(delay)
+                delay += 1
+                if delay >= 60*5:
+                    player.rect.center = (80, 150)
+                    pygame.mixer.music.unpause()
+                    break
         ###############################
             
         if pygame.sprite.spritecollide(player, doors, False):
@@ -293,7 +316,6 @@ while True:
         hits = pygame.sprite.spritecollide(player, keys, True)
         if hits:
             player.has_KEY = True
-            #hits[0].kill()
 
         #contacto com o totem
         if pygame.sprite.spritecollide(player, walls, False):
@@ -312,10 +334,13 @@ while True:
 
         stalker_1.update(player,FPS)
         stalker_2.update(player,FPS)
+        stalker_3.update(player,FPS)
 
         
     elif currentArea == 2: #JOGADOR ESTÁ NA ZONA 2
         #check for colisions here
+        player.has_KEY = False
+        
         if pygame.sprite.spritecollide(player, rocksUZ2, False):
             player.rect.y -= 75
             thumpSound.play()
@@ -333,22 +358,27 @@ while True:
             player.rect.y += PLAYERSPEED
 
         hits = pygame.sprite.spritecollide(player, keysZ2, True)
+        
         if hits:
             player.has_KEY = True
+            
         if player.has_KEY == True:
-            yellowKeyZ2.exists = False      
-        if yellowKeyZ2.exists == True:
-            yellowKeyZ2.updateSprite()
+            yellowKeyZ2.exists = False
+            
         if player.has_KEY == True: 
             doorZ2.kill()
             doorSound.play()
             player.has_KEY = False
+            
         #commit renders
         zona_2_animated.update()
         
+        if yellowKeyZ2.exists == True:
+            yellowKeyZ2.updateSprite()
+
         plant2.update()
-        all_sprites2.draw(windowSurface)
-        all_sprites2.update()
+        #all_sprites2.draw(windowSurface)
+        #all_sprites2.update()
 
         shooter_1.update(player,FPS)
         shooter_2.update(player,FPS)

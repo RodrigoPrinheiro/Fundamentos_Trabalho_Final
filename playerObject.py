@@ -15,9 +15,15 @@ class Player(pygame.sprite.Sprite):
         self.resLeft = pygame.transform.scale(self.resLeft, (416, 52))
         self.resRight=pygame.image.load("Sprites/res/resRight.png")
         self.resRight = pygame.transform.scale(self.resRight, (416, 52))
-        
         self.image = self.resDown
-        
+
+        self.hp1 =pygame.image.load("Sprites/ui/hp1.png")
+        self.hp1 = pygame.transform.scale(self.hp1, (20*2, 62*2))
+        self.hp2 =pygame.image.load("Sprites/ui/hp2.png")
+        self.hp2 = pygame.transform.scale(self.hp2, (20*2, 62*2))
+        self.hp3 =pygame.image.load("Sprites/ui/hp3.png")
+        self.hp3 = pygame.transform.scale(self.hp3, (20*2, 62*2))
+                
         self.imageStill = pygame.image.load("Sprites/res/resStill.png")
         self.imageStill = pygame.transform.scale(self.imageStill, (52, 52))
 
@@ -32,6 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.imageStill.get_rect()#tirar um rectangulo do sprite
         self.rect.center = (80, 150)
         self.has_KEY = False
+        self.hp = 3
 
     def update(self):
         keystate = pygame.key.get_pressed()
@@ -70,4 +77,4 @@ class Player(pygame.sprite.Sprite):
                 self.cImg+= 1
 
         self.screen.blit(self.image,self.rect,(self.cImg*self.w,0,self.w,self.h))
-
+        self.screen.blit(self.hp3,(5,5))

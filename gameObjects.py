@@ -146,16 +146,16 @@ class Stalker(pygame.sprite.Sprite):
     def update(self,player,FPS):
         if player.rect.x >= self.rect.x -self.range and player.rect.x <= self.rect.x +self.range and player.rect.y >= self.rect.y -(self.range-(int(self.range/3))) and player.rect.y <= self.rect.y +(self.range-(int(self.range/3))):
             if player.rect.x<self.rect.x: #esquerda
-                self.rect.move_ip(-PLAYERSPEED+3,0)
+                self.rect.move_ip(-PLAYERSPEED+4,0)
                 self.image=self.stalkLeft
             elif player.rect.x>self.rect.x: #direita
-                self.rect.move_ip(PLAYERSPEED-3,0)
+                self.rect.move_ip(PLAYERSPEED-4,0)
                 self.image=self.stalkRight
 
             if player.rect.y<self.rect.y:
-                self.rect.move_ip(0,-PLAYERSPEED+3)
+                self.rect.move_ip(0,-PLAYERSPEED+4)
             elif player.rect.y>self.rect.y:
-                self.rect.move_ip(0,PLAYERSPEED-3)
+                self.rect.move_ip(0,PLAYERSPEED-4)
 
             #ANIMATION vvvvvvvvvvvvvvvv
             if self.cImg >=self.nImg-1:
@@ -169,8 +169,7 @@ class Stalker(pygame.sprite.Sprite):
                 else:
                     self.delay+=1
 
-            self.screen.blit(self.image,self.rect,(self.cImg*self.w,0,self.w,self.h))
-            
+            self.screen.blit(self.image,(self.rect.x,self.rect.y-10,self.rect[2],self.rect[3]),(self.cImg*self.w,0,self.w,self.h))
         else:
             self.image = self.imageStill
             self.screen.blit(self.image,self.rect)
