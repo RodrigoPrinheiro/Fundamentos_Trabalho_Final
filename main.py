@@ -257,8 +257,8 @@ while True:
         currentArea = 0
         player.rect.center = (80, 150)
         pygame.mixer.music.unpause()
-        #changes hp
-        player.hp -= 1
+        #resets hp
+        player.hp = 3
         #resets door
         door1 = gameObjects.Door()
         all_sprites.add(door1)
