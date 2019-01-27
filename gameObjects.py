@@ -5,16 +5,16 @@ from settings import *
 class Door(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((40,475))
+        self.image = pygame.Surface((40,150))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.rect.center = (0, 0)
+        self.rect.center = (0, 170)
 
 
 class Key(pygame.sprite.Sprite):
     def __init__(self,screen):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((20,20))
+        self.image = pygame.Surface((26,29))
         self.image=pygame.image.load("Sprites/key/keySheet.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, ((26*12)*3, 29*3))
         self.still=pygame.image.load("Sprites/key/keyStill.png").convert_alpha()
@@ -52,17 +52,25 @@ class Key(pygame.sprite.Sprite):
 class Wall(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((1,WINDOWHEIGHT))
-        self.image.fill(YEET)
+        self.image = pygame.Surface((110,90))
+        self.image.set_alpha(250)
         self.rect = self.image.get_rect()
 
 class Rock(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((900,20))
-        self.image.set_alpha(0)  
+        self.image = pygame.Surface((520,10))
+        self.image.set_alpha(250)  
         self.rect = self.image.get_rect()
-        self.rect.center = (50, 260)
+        self.rect.center = (280, 255)
+
+class RockH(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((10,165))
+        self.image.set_alpha(250)  
+        self.rect = self.image.get_rect()
+        self.rect.center = (280, 255)
 
 
 class Stalker(pygame.sprite.Sprite):

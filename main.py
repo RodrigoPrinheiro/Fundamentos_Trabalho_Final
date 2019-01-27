@@ -4,7 +4,8 @@ from settings import *
 import playerObject, gameObjects
 import os
 
-# Set up pygame.
+# Set up pygame
+pygame.mixer.pre_init(44100,-16,2,1024)#preload dos sons
 pygame.init()
 mainClock = pygame.time.Clock()
 
@@ -28,8 +29,7 @@ zona1_1 = pygame.transform.scale(zona1_1, (1280, 720))
 music = pygame.mixer.music.load('Sounds/bgmusic.wav')
 pygame.mixer.music.play(-1)
 doorSound = pygame.mixer.Sound('Sounds/door.wav')
-#not working
-walkSound = pygame.mixer.Sound('Sounds/walk.wav')
+thumpSound = pygame.mixer.Sound('sounds/fall.wav')
 
 #Set up assets
 """EXEMPLO DE COMO DAR PROPER LOAD DE IMAGENS PARA PYGAME (OPTIMIZACAO)>>>
@@ -57,7 +57,10 @@ windowSurface.fill(YEET)
 """grupo de sprites, adicionar o objeto a este grupo como esta exemplificado no player,
 ATENCAO VER PLAYER CLASS E COMO ESTA DECLARADA, IMPORTANTE PARA FUNCIONAR"""
 all_sprites = pygame.sprite.Group()
-rocks = pygame.sprite.Group()
+rocksU = pygame.sprite.Group()
+rocksD = pygame.sprite.Group()
+rocksL = pygame.sprite.Group()
+rocksR = pygame.sprite.Group()
 keys = pygame.sprite.Group()
 doors = pygame.sprite.Group()
 walls = pygame.sprite.Group()
@@ -69,28 +72,69 @@ doors.add(door1)
 wall = gameObjects.Wall()
 all_sprites.add(wall)
 walls.add(wall)
-wall.rect.top = door1.rect.bottom
-
-wall2 = gameObjects.Wall()
-all_sprites.add(wall2)
-walls.add(wall2)
-wall2.rect.bottom = door1.rect.top
+wall.rect.topleft = (30, 300)
 
 yellowKey = gameObjects.Key(screen)
 all_sprites.add(yellowKey)
 keys.add(yellowKey)
 
-rock = gameObjects.Rock()
-all_sprites.add(rock)
-rocks.add(rock)
+rockU = gameObjects.Rock()#queda para cima orginal
+all_sprites.add(rockU)
+rocksU.add(rockU)
+
+rockD = gameObjects.Rock()#queda para baixo original
+all_sprites.add(rockD)
+rocksD.add(rockD)
+rockD.rect.center = (280, 265)
+
+rockL = gameObjects.RockH()#queda para esquerda original
+all_sprites.add(rockL)
+rocksL.add(rockL)
+rockL.rect.topleft = (535,265)
+
+rockR = gameObjects.RockH()#queda para direita original
+all_sprites.add(rockR)
+rocksR.add(rockR)
+rockR.rect.topleft = (520,270)
+
+rockU2 = gameObjects.Rock()
+all_sprites.add(rockU2)
+rocksU.add(rockU2)
+rockU2.rect.center = (800, 435)
+
+rockD2 = gameObjects.Rock()
+all_sprites.add(rockD2)
+rocksD.add(rockD2)
+rockD2.rect.center = (800, 440)
+
+rockL2 = gameObjects.RockH()
+all_sprites.add(rockL2)
+rocksL.add(rockL2)
+rockL2.rect.topleft = (800,55)
+
+rockR2 = gameObjects.RockH()
+all_sprites.add(rockR2)
+rocksR.add(rockR2)
+rockR2.rect.topleft = (775,55)
+
+rockL3 = gameObjects.RockH()
+all_sprites.add(rockL3)
+rocksL.add(rockL3)
+rockL3.rect.topleft = (1050,245)
+
+rockR3 = gameObjects.RockH()
+all_sprites.add(rockR3)
+rocksR.add(rockR3)
+rockR3.rect.topleft = (1020,245)
+
 
 player = playerObject.Player(screen)
 
 
-stalker_1=gameObjects.Stalker(screen)
+stalker_1 = gameObjects.Stalker(screen)
 stalker_1.rect.center = (300,WINDOWHEIGHT-270)
 
-stalker_2=gameObjects.Stalker(screen)
+stalker_2 = gameObjects.Stalker(screen)
 stalker_2.rect.center = (WINDOWWIDTH - 100,100)
 
 
@@ -125,56 +169,85 @@ while True:
     
     #update
     all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
-            
-    #check for colisions here
-    if pygame.sprite.spritecollide(player, rocks, False):
-        player.rect.y -= 75
-        #INSERT FALLSOUND.PLAY
 
-    #inimigos a cair tb############
-    if pygame.sprite.spritecollide(stalker_1, rocks, False):
-        stalker_1.rect.y -= 75
 
-    #if mais inimigos oof do this 
-    ###############################
+    if currentArea == 0:         
+        #check for colisions here
+        if pygame.sprite.spritecollide(player, rocksU, False):
+            player.rect.y -= 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksD, False):
+            player.rect.y += 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksL, False):
+            player.rect.x += 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksR, False):
+            player.rect.x -= 75
+            thumpSound.play()
         
-    if pygame.sprite.spritecollide(player, doors, False):
-        player.rect.x += PLAYERSPEED
+        #inimigos a cair tb############
+        if pygame.sprite.spritecollide(stalker_1, rocksU, False):
+            stalker_1.rect.y -= 75
+        if pygame.sprite.spritecollide(stalker_1, rocksD, False):
+            stalker_1.rect.y += 75
+        if pygame.sprite.spritecollide(stalker_1, rocksL, False):
+            stalker_1.rect.x += 75
+        if pygame.sprite.spritecollide(stalker_1, rocksR, False):
+            stalker_1.rect.x -= 75    
+            
+        if pygame.sprite.spritecollide(stalker_1, rocksU, False):
+            stalker_2.rect.y -= 75
+        if pygame.sprite.spritecollide(stalker_1, rocksD, False):
+            stalker_2.rect.y += 75
+        if pygame.sprite.spritecollide(stalker_2, rocksL, False):
+            stalker_2.rect.x += 75
+        if pygame.sprite.spritecollide(stalker_2, rocksR, False):
+            stalker_2.rect.x -= 75 
 
-    hits = pygame.sprite.spritecollide(player, keys, True)
-    if hits:
-        player.has_KEY = True
-        #hits[0].kill()
+        #if mais inimigos oof do this 
+        ###############################
+            
+        if pygame.sprite.spritecollide(player, doors, False):
+            player.rect.x += PLAYERSPEED
 
-    #hits = pygame.sprite.spritecollide(player, walls, False)
-    #if hits:
-        #if hits[0].rect.x > WINDOWWIDTH /2:
-            #player.rect.x -= PLAYERSPEED
-        #else:
-            #player.rect.x += PLAYERSPEED
+        hits = pygame.sprite.spritecollide(player, keys, True)
+        if hits:
+            player.has_KEY = True
+            #hits[0].kill()
 
-    #Draw the ALL SPRITES on surface.
-    if currentArea <= 0:
-        screen.blit(zona1,(0,0))
-    elif currentArea == 1:
-        screen.blit(zona1_1,(0,0))
+        #contacto com o totem
+        if pygame.sprite.spritecollide(player, walls, False):
+            player.rect.x += PLAYERSPEED
+            player.rect.y += PLAYERSPEED 
+
+
+        #Draw the ALL SPRITES on surface.
+        if currentArea <= 0:
+            screen.blit(zona1,(0,0))
+        elif currentArea == 1:
+            screen.blit(zona1_1,(0,0))
+        elif currentArea == 2:
+            screen.blit(zona2,(0,0))
+        else:
+            windowSurface.fill(GREEN)
+
+        all_sprites.draw(windowSurface)
+
+        # commit render
+        player.update()
+
+        stalker_1.update(player,FPS)
+        stalker_2.update(player,FPS)
+
+        if player.has_KEY == True:
+            yellowKey.exists = False      
+        if yellowKey.exists == True:
+            yellowKey.updateSprite()
     elif currentArea == 2:
-        screen.blit(zona2,(0,0))
-    else:
-        windowSurface.fill(GREEN)
-
-    #all_sprites.draw(windowSurface)
-
-    # commit render
-    player.update()
-
-    stalker_1.update(player,FPS)
-    stalker_2.update(player,FPS)
-
-    if player.has_KEY == True:
-        yellowKey.exists = False      
-    if yellowKey.exists == True:
-        yellowKey.updateSprite()
+        all_sprites.draw(windowSurface)
+        all_sprites.update()
+        
     
     pygame.display.flip()
     mainClock.tick(FPS)
