@@ -350,7 +350,7 @@ while True:
                     #resets key
                     yellowKey = gameObjects.Key(screen)
                     all_sprites.add(yellowKey)
-                    keys.add(yellowKey)                
+                    keys.add(yellowKey)
                     break
         ###############################           
         if pygame.sprite.spritecollide(player, doors, False):
