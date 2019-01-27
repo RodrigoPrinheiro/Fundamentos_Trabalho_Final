@@ -148,35 +148,45 @@ wallsZ2 = pygame.sprite.Group()
 
 zona_2_animated = gameObjects.Background(screen,FPS)
 
+doorZ2 = gameObjects.Door()
+all_sprites2.add(doorZ2)
+doorsZ2.add(doorZ2)
+doorZ2.rect.center = (480,15)
+
+yellowKeyZ2 = gameObjects.Key(screen)
+all_sprites2.add(yellowKeyZ2)
+keysZ2.add(yellowKeyZ2)
+yellowKeyZ2.rect.center = (1150,300)
+
 rockUZ2 = gameObjects.Rock()
 all_sprites2.add(rockUZ2)
 rocksUZ2.add(rockUZ2)
-rockUZ2.rect.center = (360,255)
+rockUZ2.rect.center = (360,250)
 
 rockDZ2 = gameObjects.Rock()
 all_sprites2.add(rockDZ2)
 rocksDZ2.add(rockDZ2)
-rockDZ2.rect.center = (360,265)
+rockDZ2.rect.center = (360,255)
 
 rockUZ2_2 = gameObjects.Rock()
 all_sprites2.add(rockUZ2_2)
 rocksUZ2.add(rockUZ2_2)
-rockUZ2_2.rect.center = (900,255)
+rockUZ2_2.rect.center = (900,250)
 
 rockDZ2_2 = gameObjects.Rock()
 all_sprites2.add(rockDZ2_2)
 rocksDZ2.add(rockDZ2_2)
-rockDZ2_2.rect.center = (900,265)
+rockDZ2_2.rect.center = (900,255)
 
 rockUZ2_3 = gameObjects.Rock()
 all_sprites2.add(rockUZ2_3)
 rocksUZ2.add(rockUZ2_3)
-rockUZ2_3.rect.center = (1150,255)
+rockUZ2_3.rect.center = (1150,250)
 
 rockDZ2_3 = gameObjects.Rock()
 all_sprites2.add(rockDZ2_3)
 rocksDZ2.add(rockDZ2_3)
-rockDZ2_3.rect.center = (1150,265)
+rockDZ2_3.rect.center = (1150,255)
 
 rockLZ2 = gameObjects.RockH()
 all_sprites2.add(rockLZ2)
@@ -216,22 +226,23 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-    if PLAYERSPEED > 0 and PLAYERSPEED < 0:
-        walkSound.play()
+
     if player.has_KEY == True: 
         door1.kill()
         doorSound.play()
         player.has_KEY = False
-
+        
     if currentArea == 0 and player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
         currentArea = 2
-        player.rect.right = WINDOWWIDTH -1 - player.w
+        player.rect.right = WINDOWWIDTH - 21
         areaChange.play()
     elif player.rect.right >= WINDOWWIDTH - 20  and player.rect.top < 259 and player.rect.top > 0 and currentArea != 0:
         currentArea = 0 
-        player.rect.left = 80
-        player.rect.top = 150
+        player.rect.left = 21
         areaChange.play()
+    if currentArea == 2 and player.rect.left > 415 and player.rect.right < 545 and player.rect.top < 70:
+        currentArea = 2
+        player.rect.y = 650
     
     #update
     #all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
@@ -243,7 +254,7 @@ while True:
 
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
         #check for colisions here
-        '''if pygame.sprite.spritecollide(player, rocksU, False):
+        if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksD, False):
@@ -254,7 +265,7 @@ while True:
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
-            thumpSound.play()'''
+            thumpSound.play()
         
         #inimigos a colidir com buracos tb############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
@@ -318,12 +329,26 @@ while True:
             player.rect.x += 75
             thumpSound.play()
 
-        # commit renders
+        if pygame.sprite.spritecollide(player, doorsZ2, False):
+            player.rect.y += PLAYERSPEED
+
+        hits = pygame.sprite.spritecollide(player, keysZ2, True)
+        if hits:
+            player.has_KEY = True
+        if player.has_KEY == True:
+            yellowKeyZ2.exists = False      
+        if yellowKeyZ2.exists == True:
+            yellowKeyZ2.updateSprite()
+        if player.has_KEY == True: 
+            doorZ2.kill()
+            doorSound.play()
+            player.has_KEY = False
+        #commit renders
         zona_2_animated.update()
         
         plant2.update()
-        #all_sprites2.draw(windowSurface)
-        #all_sprites2.update()
+        all_sprites2.draw(windowSurface)
+        all_sprites2.update()
 
         shooter_1.update(player,FPS)
         shooter_2.update(player,FPS)
