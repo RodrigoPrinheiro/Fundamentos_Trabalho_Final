@@ -241,8 +241,8 @@ while True:
         currentArea = 2
         player.rect.y = 650
     
-    #update
-    #all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
+    
+    #door1 desctruction
     if player.has_KEY == True: 
             door1.kill()
             doorSound.play()
@@ -254,27 +254,37 @@ while True:
 
     #death
     if player.hp == 0:
+        #puts player on start
         currentArea = 0
         player.rect.center = (80, 150)
         pygame.mixer.music.unpause()
         #resets hp
         player.hp = 3
-        #resets door
+        #resets door 1st zone
         door1 = gameObjects.Door()
         all_sprites.add(door1)
         doors.add(door1)
-        #resets key
+        #resets key 1st zone
         yellowKey = gameObjects.Key(screen)
         all_sprites.add(yellowKey)
         keys.add(yellowKey)
-        #resets stalkers
+        #resets stalkers 1st zone
         stalker_1 = gameObjects.Stalker(screen)
         stalker_1.rect.center = (500,WINDOWHEIGHT-140)
         stalker_2 = gameObjects.Stalker(screen)
         stalker_2.rect.center = (WINDOWWIDTH - 100,100)
         stalker_3 = gameObjects.Stalker(screen)
         stalker_3.rect.center = (WINDOWWIDTH - 100,WINDOWHEIGHT-140)
-            
+        #resets door 2nd zone
+        doorZ2 = gameObjects.Door()
+        all_sprites2.add(doorZ2)
+        doorsZ2.add(doorZ2)
+        doorZ2.rect.center = (480,15)
+        #resets key 2nd zone
+        yellowKeyZ2 = gameObjects.Key(screen)
+        all_sprites2.add(yellowKeyZ2)
+        keysZ2.add(yellowKeyZ2)
+        yellowKeyZ2.rect.center = (1150,300)   
 
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
 
