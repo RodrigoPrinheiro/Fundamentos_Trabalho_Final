@@ -11,7 +11,7 @@ class Decor(pygame.sprite.Sprite):
         self.still=pygame.image.load("Sprites/decor/plantStill.png").convert_alpha()
         self.still = pygame.transform.scale(self.still,(15*3, 14*3))
         self.rect = self.still.get_rect()
-        self.rect.center = (1050, 450)
+        self.rect.center = (759, 262)
 
         self.screen=screen
         self.FPS = FPS
@@ -31,6 +31,7 @@ class Decor(pygame.sprite.Sprite):
             self.delay += 1
             if self.delay == self.FPS-(self.totalDelay-44):#fazer o ultimo frame demorar mais (barely unnoticeable)
                 self.cImg = 0
+                self.delay=0
         else:
             if self.delay >= self.FPS-self.totalDelay:
                 self.cImg+= 1
@@ -60,7 +61,7 @@ class Key(pygame.sprite.Sprite):
         self.still = pygame.image.load("Sprites/key/keyStill.png").convert_alpha()
         self.still = pygame.transform.scale(self.still, (26*3, 29*3))
         self.rect = self.still.get_rect()
-        self.rect.center = (30, 80)#300 e 360
+        self.rect.center = (300, 380)#300 e 360
         self.exists = True
 
         self.screen=screen
@@ -176,81 +177,128 @@ class Stalker(pygame.sprite.Sprite):
 
 
 class Shooter(pygame.sprite.Sprite):
-    def __init__(self,screen):
+    def __init__(self,screen,shotHitWallSound,speedSound,directionX,directionY,locationX,locationY):
         pygame.sprite.Sprite.__init__(self)
+
+        self.shotHitWallSound = shotHitWallSound
+        self.speedSound = speedSound
+        self.directionX = directionX
+        self.directionY = directionY
         
-        """self.stalkLeft=pygame.image.load("Sprites/enemies/stalkerLeft.png").convert_alpha()
-        self.stalkLeft = pygame.transform.scale(self.stalkLeft, (140*4, 22*4))
-        self.stalkRight=pygame.image.load("Sprites/enemies/stalkerRight.png").convert_alpha()
-        self.stalkRight = pygame.transform.scale(self.stalkRight, (140*4, 22*4))
-        
-        self.image = self.stalkLeft
-        
-        self.imageStill = pygame.image.load("Sprites/enemies/stalkerStill.png").convert_alpha()
-        self.imageStill = pygame.transform.scale(self.imageStill, (11*4, 20*4))
-        """
         self.screen=screen
-        """
-        self.nImg=10 #number of sprites
+        
+        self.nImg=15 #number of sprites
         self.cImg=0 #current sprite
         
         self.totalDelay = 58 #tempo antes de mudar de sprite (Quanto maior mais lento)
         self.delay = 0 #contagem do delay usado no update
 
-        self.w = 14*4 #sprite size x
-        self.h = 22*4 #sprite size y
+        self.w = 16*2 #sprite size x
+        self.h = 16*2 #sprite size y
 
-        self.rect = self.imageStill.get_rect()#tirar um rectangulo do sprite
-        self.range = 350"""
+        #self.rect = self.shotStill.get_rect()#tirar um rectangulo do sprite
 
         #shot properties
-        self.shotSprite = pygame.image.load("Sprites/enemies/stalkerStill.png").convert_alpha()
-        self.shotSprite = pygame.transform.scale(self.shotSprite, (11*4, 20*4))
+        self.shotStill = pygame.image.load("Sprites/enemies/shotStill.png").convert_alpha()
+        self.shotStill = pygame.transform.scale(self.shotStill, (16*2, 16*2))
+        self.shotUp=pygame.image.load("Sprites/enemies/shotUp.png").convert_alpha()
+        self.shotUp = pygame.transform.scale(self.shotUp , ((16*15)*2, 16*2))
+        self.shotLeft=pygame.image.load("Sprites/enemies/shotLeft.png").convert_alpha()
+        self.shotLeft = pygame.transform.scale(self.shotLeft, ((16*15)*2, 16*2))
+
+        self.usedImage = self.shotUp
+
+        self.rect = self.shotStill.get_rect()#tirar um rectangulo do sprite
+
+        self.locationX = locationX 
+        self.locationY = locationY
+        
         self.shots=[]
         self.shotMinSize = 199
         self.shotMaxSize = 200
-        self.shotMinSpeed = 15
-        self.shotMaxSpeed = 25
-        self.shotAddRate = 50
+        self.shotMinSpeed = 1
+        self.shotMaxSpeed = 15
+        self.shotAddRate = 60
         self.shotAddCounter = 0
         
-    def update(self,player,FPS):
-        #create the shot
+    def update(self,player,FPS): #directionX e directionY multiplica o valor, os valores serão apenas 1, -1 e 0 USADO NO MOVE THE SHOTS
+        #create the shot                                                sendo o 1 cima->baixo ou esquerda->direita, o -1 baixo->cima direita->esquerda e o 0 parar
         self.shotAddCounter+=1
         if self.shotAddCounter == self.shotAddRate:
             self.shotAddCounter = 0 #####pygame.Rect(random.randint(100, 200 - baddieSize)#####
-            self.shotSize = random.randint(self.shotMinSize, self.shotMaxSize) #PYGAME.RECT((400,20, TAMANHO X SPRITE, TAMANHO Y SPRITE))
-            self.newShot = {'rect': pygame.Rect(400,20, 11*4, 20*4), 
+            self.shotSize = random.randint(self.shotMinSize, self.shotMaxSize)
+            self.newShot = {'rect': pygame.Rect(self.locationX,self.locationY, 16*2, 16*2), 
                         'speed': random.randint(self.shotMinSpeed, self.shotMaxSpeed),
-                        'surface':pygame.transform.scale(self.shotSprite,(0,200)),
+                        'surface':pygame.transform.scale(self.shotStill,(16*2,16*2)),
                         }
             self.shots.append(self.newShot)
+            if self.newShot['speed'] >= 11:
+                self.speedSound.play()
         
         # Move the shots
         for b in self.shots: #change sides here (up down etc..)
-               b['rect'].move_ip(0,b['speed'])
+               b['rect'].move_ip(self.directionX*b['speed'],self.directionY*b['speed'])
+               
+        # Delete shots went pass the limit or hit the player.
+        for b in self.shots[:]:
+            if b['rect'].top < 75 or b['rect'].left < 18 or player.rect.colliderect(b['rect']):
+                self.shots.remove(b)
+                self.shotHitWallSound.play()
 
         #render them shots
-        for b in self.shots:
-            self.screen.blit(self.shotSprite,b['rect'])
-
-        #collision
-        for b in self.shots:
-            if player.rect.colliderect(b['rect']):
-                print('shot collide')
-
-        """#ANIMATION vvvvvvvvvvvvvvvv
+        #ANIMATION vvvvvvvvvvvvvvvv
         if self.cImg >=self.nImg-1:
             self.delay += 1
             if self.delay == FPS-self.totalDelay:#fazer o ultimo frame demorar mais (barely unnoticeable)
                     self.cImg = 0
+                    self.delay=0
         else:
             if self.delay == FPS-self.totalDelay:
                     self.cImg+= 1
                     self.delay=0
             else:
                     self.delay+=1
+                    
+        for b in self.shots:
+            self.screen.blit(self.usedImage,b['rect'],(self.cImg*self.w,0,self.w,self.h))
 
-        self.screen.blit(self.image,self.rect,(self.cImg*self.w,0,self.w,self.h))"""
+        #collision
+        for b in self.shots:
+            if player.rect.colliderect(b['rect']):
+                print
+class Background(pygame.sprite.Sprite):
+    def __init__(self,screen,FPS):
+        pygame.sprite.Sprite.__init__(self)
+        self.zona2 = pygame.image.load("Sprites/WIP/zona_2/zona_2_unfinished.png").convert_alpha()
+        self.zona2 = pygame.transform.scale(self.zona2, (1280, 720))
+        self.zona2_anim = pygame.image.load("Sprites/WIP/zona_2/zona_2_animated.png").convert_alpha()
+        self.zona2_anim = pygame.transform.scale(self.zona2_anim, (1280*8, 720))
+        self.rect = self.zona2.get_rect()
+        self.rect.topleft = (0, 0)
 
+        self.screen=screen
+        self.FPS = FPS
 
+        self.nImg=8 #number of sprites
+        self.cImg=0 #current sprite
+        
+        self.totalDelay = 58 #tempo antes de mudar de sprite (Quanto maior mais lento)
+        self.delay = 0 #contagem do delay usado no update
+
+        self.w = 1280 #sprite size x
+        self.h = 720 #sprite size y
+
+    def update(self):
+        #ANIMATION vvvvvvvvvvvvvvvv
+        if self.cImg >=self.nImg-1:
+            self.delay += 1
+            if self.delay == self.FPS-self.totalDelay:#fazer o ultimo frame demorar mais (barely unnoticeable)
+                self.cImg = 0
+        else:
+            if self.delay >= self.FPS-self.totalDelay:
+                self.cImg+= 1
+                self.delay=0
+            else:
+                self.delay+=1
+
+        self.screen.blit(self.zona2_anim,self.rect,(self.cImg*self.w,0,self.w,self.h))

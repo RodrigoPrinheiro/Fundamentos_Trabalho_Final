@@ -30,12 +30,9 @@ music = pygame.mixer.music.load('Sounds/bgmusic.wav')
 pygame.mixer.music.play(-1)
 doorSound = pygame.mixer.Sound('Sounds/door.wav')
 thumpSound = pygame.mixer.Sound('Sounds/fall.wav')
-
-#Set up assets
-"""EXEMPLO DE COMO DAR PROPER LOAD DE IMAGENS PARA PYGAME (OPTIMIZACAO)>>>
-someObject()
-
-    self.image = pygame.image.load("path/"image.png").convert_alpha()    """
+shotHitWallSound = pygame.mixer.Sound('Sounds/hitWall.wav')
+speedSound = pygame.mixer.Sound('Sounds/speed.wav')
+areaChange = pygame.mixer.Sound('Sounds/areaChange.wav')
 
 # Set up variables.
 moveLeft = False
@@ -54,8 +51,7 @@ windowSurface.fill(GREEN)
 windowSurface.fill(RED)
 windowSurface.fill(YEET)
 
-"""grupo de sprites, adicionar o objeto a este grupo como esta exemplificado no player,
-ATENCAO VER PLAYER CLASS E COMO ESTA DECLARADA, IMPORTANTE PARA FUNCIONAR"""
+"""grupo de sprites, adicionar o objeto a este grupo"""
 
 player = playerObject.Player(screen)
 
@@ -132,12 +128,13 @@ rocksR.add(rockR3)
 rockR3.rect.topleft = (1020,245)
 
 stalker_1 = gameObjects.Stalker(screen)
-stalker_1.rect.center = (300,WINDOWHEIGHT-270)
-
+stalker_1.rect.center = (250,WINDOWHEIGHT-140)
 stalker_2 = gameObjects.Stalker(screen)
 stalker_2.rect.center = (WINDOWWIDTH - 100,100)
 
 plant = gameObjects.Decor(screen,FPS)
+plant2 = gameObjects.Decor(screen,FPS)
+plant2.rect.center=(400,271)
 
 "PARA A ZONA_2"
 all_sprites2 = pygame.sprite.Group()
@@ -148,6 +145,8 @@ rocksRZ2 = pygame.sprite.Group()
 keysZ2 = pygame.sprite.Group()
 doorsZ2 = pygame.sprite.Group()
 wallsZ2 = pygame.sprite.Group()
+
+zona_2_animated = gameObjects.Background(screen,FPS)
 
 rockUZ2 = gameObjects.Rock()
 all_sprites2.add(rockUZ2)
@@ -199,8 +198,12 @@ all_sprites2.add(rockRZ2_2)
 rocksRZ2.add(rockRZ2_2)
 rockRZ2_2.rect.center = (875,460)
 
+shooter_1 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,0,-1, 200, 630)
+shooter_2 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,-1,0, WINDOWWIDTH-100,400)
+shooter_2.usedImage = shooter_2.shotLeft
 
-# Run the game loop.
+
+# MAIN GAME LOOP.
 while True:
 
     # Check for events.
@@ -223,28 +226,24 @@ while True:
     if currentArea == 0 and player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
         currentArea = 2
         player.rect.right = WINDOWWIDTH -1 - player.w
+        areaChange.play()
     elif player.rect.right >= WINDOWWIDTH - 20  and player.rect.top < 259 and player.rect.top > 0 and currentArea != 0:
         currentArea = 0 
         player.rect.left = 80
         player.rect.top = 150
+        areaChange.play()
     
     #update
     #all_sprites.update() #updates ALL SPRITES positions without clogging up with multiple background repeats
 
 
-    #Draw the ALL SPRITES on surface.
+    #TEMP.
     if currentArea <= 0:
         screen.blit(zona1,(0,0))
-    elif currentArea == 1:
-        screen.blit(zona1_1,(0,0))
-    elif currentArea == 2:
-        screen.blit(zona2,(0,0))
-    else:
-        windowSurface.fill(GREEN)
 
-    if currentArea == 0:         
+    if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
         #check for colisions here
-        if pygame.sprite.spritecollide(player, rocksU, False):
+        '''if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksD, False):
@@ -255,9 +254,9 @@ while True:
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
-            thumpSound.play()
+            thumpSound.play()'''
         
-        #inimigos a cair tb############
+        #inimigos a colidir com buracos tb############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
             stalker_1.rect.y -= 15
         if pygame.sprite.spritecollide(stalker_1, rocksD, False):
@@ -274,9 +273,7 @@ while True:
         if pygame.sprite.spritecollide(stalker_2, rocksL, False):
             stalker_2.rect.x += 15
         if pygame.sprite.spritecollide(stalker_2, rocksR, False):
-            stalker_2.rect.x -= 15 
-
-        #if mais inimigos oof do this 
+            stalker_2.rect.x -= 15  
         ###############################
             
         if pygame.sprite.spritecollide(player, doors, False):
@@ -292,9 +289,9 @@ while True:
             player.rect.x += PLAYERSPEED
             player.rect.y += PLAYERSPEED 
 
-        all_sprites.draw(windowSurface)
+        #all_sprites.draw(windowSurface)
 
-        # commit render
+        # commit renders
         plant.update()
         
         if player.has_KEY == True:
@@ -306,8 +303,7 @@ while True:
         stalker_2.update(player,FPS)
 
         
-    elif currentArea == 2:
-        print
+    elif currentArea == 2: #JOGADOR ESTÁ NA ZONA 2
         #check for colisions here
         if pygame.sprite.spritecollide(player, rocksUZ2, False):
             player.rect.y -= 75
@@ -322,8 +318,15 @@ while True:
             player.rect.x += 75
             thumpSound.play()
 
-        all_sprites2.draw(windowSurface)
-        all_sprites2.update()
+        # commit renders
+        zona_2_animated.update()
+        
+        plant2.update()
+        #all_sprites2.draw(windowSurface)
+        #all_sprites2.update()
+
+        shooter_1.update(player,FPS)
+        shooter_2.update(player,FPS)
         
     player.update()
     
