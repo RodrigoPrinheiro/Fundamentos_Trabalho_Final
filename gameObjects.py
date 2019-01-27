@@ -160,7 +160,7 @@ class Stalker(pygame.sprite.Sprite):
             #ANIMATION vvvvvvvvvvvvvvvv
             if self.cImg >=self.nImg-1:
                 self.delay += 1
-                if self.delay == FPS-self.totalDelay:#fazer o ultimo frame demorar mais (barely unnoticeable)
+                if self.delay == FPS-self.totalDelay:#fazer o ultimo frame demorar mais (barely noticeable)
                     self.cImg = 0
             else:
                 if self.delay == FPS-self.totalDelay:

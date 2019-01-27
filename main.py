@@ -254,8 +254,8 @@ while True:
 
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
         #check for colisions here
-        
-        '''if pygame.sprite.spritecollide(player, rocksU, False):
+        """
+        if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksD, False):
@@ -266,8 +266,8 @@ while True:
             thumpSound.play()
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
-            thumpSound.play()'''
-        
+            thumpSound.play()
+        """
         #inimigos a colidir com buracos e player############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
             stalker_1.rect.y -= 15
@@ -307,6 +307,15 @@ while True:
                 if delay >= 60*5:
                     player.rect.center = (80, 150)
                     pygame.mixer.music.unpause()
+                    #resets door
+                    door1 = gameObjects.Door()
+                    all_sprites.add(door1)
+                    doors.add(door1)
+                    #resets key
+                    yellowKey = gameObjects.Key(screen)
+                    all_sprites.add(yellowKey)
+                    keys.add(yellowKey)
+                    
                     break
         ###############################
             
