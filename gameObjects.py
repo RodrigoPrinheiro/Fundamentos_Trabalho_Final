@@ -55,11 +55,12 @@ class Key(pygame.sprite.Sprite):
     def __init__(self,screen):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((26,29))
-        self.image=pygame.image.load("Sprites/key/keySheet.png").convert_alpha()
+        self.image = pygame.image.load("Sprites/key/keySheet.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, ((26*12)*3, 29*3))
-        self.still=pygame.image.load("Sprites/key/keyStill.png").convert_alpha()
+        self.still = pygame.image.load("Sprites/key/keyStill.png").convert_alpha()
+        self.still = pygame.transform.scale(self.still, (26*3, 29*3))
         self.rect = self.still.get_rect()
-        self.rect.center = (300, 360)
+        self.rect.center = (30, 80)#300 e 360
         self.exists = True
 
         self.screen=screen

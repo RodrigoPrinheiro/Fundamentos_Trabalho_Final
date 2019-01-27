@@ -149,6 +149,57 @@ keysZ2 = pygame.sprite.Group()
 doorsZ2 = pygame.sprite.Group()
 wallsZ2 = pygame.sprite.Group()
 
+rockUZ2 = gameObjects.Rock()
+all_sprites2.add(rockUZ2)
+rocksUZ2.add(rockUZ2)
+rockUZ2.rect.center = (360,255)
+
+rockDZ2 = gameObjects.Rock()
+all_sprites2.add(rockDZ2)
+rocksDZ2.add(rockDZ2)
+rockDZ2.rect.center = (360,265)
+
+rockUZ2_2 = gameObjects.Rock()
+all_sprites2.add(rockUZ2_2)
+rocksUZ2.add(rockUZ2_2)
+rockUZ2_2.rect.center = (900,255)
+
+rockDZ2_2 = gameObjects.Rock()
+all_sprites2.add(rockDZ2_2)
+rocksDZ2.add(rockDZ2_2)
+rockDZ2_2.rect.center = (900,265)
+
+rockUZ2_3 = gameObjects.Rock()
+all_sprites2.add(rockUZ2_3)
+rocksUZ2.add(rockUZ2_3)
+rockUZ2_3.rect.center = (1150,255)
+
+rockDZ2_3 = gameObjects.Rock()
+all_sprites2.add(rockDZ2_3)
+rocksDZ2.add(rockDZ2_3)
+rockDZ2_3.rect.center = (1150,265)
+
+rockLZ2 = gameObjects.RockH()
+all_sprites2.add(rockLZ2)
+rocksLZ2.add(rockLZ2)
+rockLZ2.rect.center = (850,350)
+
+rockRZ2 = gameObjects.RockH()
+all_sprites2.add(rockRZ2)
+rocksRZ2.add(rockRZ2)
+rockRZ2.rect.center = (875,350)
+
+rockLZ2_2 = gameObjects.RockH()
+all_sprites2.add(rockLZ2_2)
+rocksLZ2.add(rockLZ2_2)
+rockLZ2_2.rect.center = (850,460)
+
+rockRZ2_2 = gameObjects.RockH()
+all_sprites2.add(rockRZ2_2)
+rocksRZ2.add(rockRZ2_2)
+rockRZ2_2.rect.center = (875,460)
+
+
 # Run the game loop.
 while True:
 
@@ -169,7 +220,7 @@ while True:
         doorSound.play()
         player.has_KEY = False
 
-    if player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
+    if currentArea == 0 and player.rect.left <= 10 and player.rect.top < 250 and player.rect.top > 0:
         currentArea = 2
         player.rect.right = WINDOWWIDTH -1 - player.w
     elif player.rect.right >= WINDOWWIDTH - 20  and player.rect.top < 259 and player.rect.top > 0 and currentArea != 0:
@@ -241,7 +292,7 @@ while True:
             player.rect.x += PLAYERSPEED
             player.rect.y += PLAYERSPEED 
 
-        #all_sprites.draw(windowSurface)
+        all_sprites.draw(windowSurface)
 
         # commit render
         plant.update()
@@ -257,8 +308,22 @@ while True:
         
     elif currentArea == 2:
         print
-        #all_sprites.draw(windowSurface)
-        #all_sprites.update()
+        #check for colisions here
+        if pygame.sprite.spritecollide(player, rocksUZ2, False):
+            player.rect.y -= 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksDZ2, False):
+            player.rect.y += 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksLZ2, False):
+            player.rect.x -= 75
+            thumpSound.play()
+        if pygame.sprite.spritecollide(player, rocksRZ2, False):
+            player.rect.x += 75
+            thumpSound.play()
+
+        all_sprites2.draw(windowSurface)
+        all_sprites2.update()
         
     player.update()
     
