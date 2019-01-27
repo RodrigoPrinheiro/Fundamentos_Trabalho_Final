@@ -252,9 +252,33 @@ while True:
     if currentArea <= 0:
         screen.blit(zona1,(0,0))
 
+    #death
+    if player.hp == 0:
+        currentArea = 0
+        player.rect.center = (80, 150)
+        pygame.mixer.music.unpause()
+        #changes hp
+        player.hp -= 1
+        #resets door
+        door1 = gameObjects.Door()
+        all_sprites.add(door1)
+        doors.add(door1)
+        #resets key
+        yellowKey = gameObjects.Key(screen)
+        all_sprites.add(yellowKey)
+        keys.add(yellowKey)
+        #resets stalkers
+        stalker_1 = gameObjects.Stalker(screen)
+        stalker_1.rect.center = (500,WINDOWHEIGHT-140)
+        stalker_2 = gameObjects.Stalker(screen)
+        stalker_2.rect.center = (WINDOWWIDTH - 100,100)
+        stalker_3 = gameObjects.Stalker(screen)
+        stalker_3.rect.center = (WINDOWWIDTH - 100,WINDOWHEIGHT-140)
+            
+
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
+
         #check for colisions here
-        """
         if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             thumpSound.play()
@@ -267,7 +291,7 @@ while True:
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
             thumpSound.play()
-        """
+
         #inimigos a colidir com buracos e player############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
             stalker_1.rect.y -= 15
@@ -296,8 +320,8 @@ while True:
         if pygame.sprite.spritecollide(stalker_3, rocksR, False):
             stalker_3.rect.x -= 15
 
-
-        if player.rect.colliderect(stalker_1.rect) or player.rect.colliderect(stalker_2.rect):
+        #stalker BAD TOUCH
+        if player.rect.colliderect(stalker_1.rect) or player.rect.colliderect(stalker_2.rect) or player.rect.colliderect(stalker_3.rect):
             delay = 0
             pygame.mixer.music.pause()
             stalkerKill.play()
@@ -307,6 +331,8 @@ while True:
                 if delay >= 60*5:
                     player.rect.center = (80, 150)
                     pygame.mixer.music.unpause()
+                    #changes hp
+                    player.hp -= 1
                     #resets door
                     door1 = gameObjects.Door()
                     all_sprites.add(door1)
@@ -314,11 +340,9 @@ while True:
                     #resets key
                     yellowKey = gameObjects.Key(screen)
                     all_sprites.add(yellowKey)
-                    keys.add(yellowKey)
-                    
+                    keys.add(yellowKey)                
                     break
-        ###############################
-            
+        ###############################           
         if pygame.sprite.spritecollide(player, doors, False):
             player.rect.x += PLAYERSPEED
 
@@ -362,18 +386,14 @@ while True:
         if pygame.sprite.spritecollide(player, rocksRZ2, False):
             player.rect.x += 75
             thumpSound.play()
-
         if pygame.sprite.spritecollide(player, doorsZ2, False):
             player.rect.y += PLAYERSPEED
-
         hits = pygame.sprite.spritecollide(player, keysZ2, True)
         
         if hits:
-            player.has_KEY = True
-            
+            player.has_KEY = True           
         if player.has_KEY == True:
-            yellowKeyZ2.exists = False
-            
+            yellowKeyZ2.exists = False           
         if player.has_KEY == True: 
             doorZ2.kill()
             doorSound.play()
