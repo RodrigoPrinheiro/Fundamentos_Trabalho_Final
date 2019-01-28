@@ -213,9 +213,10 @@ rocksRZ2.add(rockRZ2_2)
 rockRZ2_2.rect.center = (875,460)
 
 shooter_1 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,0,-1, 200, 630)
-shooter_2 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,-1,0, WINDOWWIDTH-100,400)
+shooter_2 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,-1,0, WINDOWWIDTH-80,405)
 shooter_2.usedImage = shooter_2.shotLeft
 
+menu.menu()
 # MAIN GAME LOOP.
 while True:
     # Check for events.
