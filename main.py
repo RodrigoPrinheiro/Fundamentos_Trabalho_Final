@@ -216,8 +216,6 @@ shooter_1 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,0,-1, 200, 63
 shooter_2 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,-1,0, WINDOWWIDTH-100,400)
 shooter_2.usedImage = shooter_2.shotLeft
 
-menu()
-
 # MAIN GAME LOOP.
 while True:
     # Check for events.
