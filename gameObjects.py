@@ -50,6 +50,8 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (-55, 170)
         self.sprite = pygame.image.load("Sprites/obstacles/wall.png").convert_alpha()
+        self.lock = pygame.image.load("Sprites/obstacles/lock.png").convert_alpha()
+        self.lock = pygame.transform.scale(self.lock, (55, 70))
 
 class Key(pygame.sprite.Sprite):
     def __init__(self,screen):

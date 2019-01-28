@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.has_KEY = False
         self.hp = 3
 
-    def update(self,finalCutscene):
+    def update(self,finalCutscene,menu):
         keystate = pygame.key.get_pressed()
         if finalCutscene != True:
             if keystate[pygame.K_LEFT] and self.rect.x >= 10:
@@ -87,7 +87,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.rect.top >= WINDOWHEIGHT:
                     self.image = self.resUpNoShadow
                     if self.cutSceneMove == 1 and self.rect.top >= WINDOWHEIGHT + 190*2 + 100:
-                        print('end')
+                        menu.quit_game()
                         
                     
                 self.rect.y += self.cutSceneMove*PLAYERSPEED

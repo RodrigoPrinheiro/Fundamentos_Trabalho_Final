@@ -56,6 +56,7 @@ windowSurface.fill(YEET)
 
 ''''''
 player = playerObject.Player(screen)
+menu = menu.menu(screen)
 
 "PARA A ZONA_1"
 all_sprites = pygame.sprite.Group()
@@ -216,7 +217,7 @@ shooter_1 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,0,-1, 200, 63
 shooter_2 = gameObjects.Shooter(screen,shotHitWallSound,speedSound,-1,0, WINDOWWIDTH-80,405)
 shooter_2.usedImage = shooter_2.shotLeft
 
-menu.menu()
+menu.start_screen()
 # MAIN GAME LOOP.
 while True:
     # Check for events.
@@ -292,7 +293,7 @@ while True:
     if currentArea == 0: #JOGADOR ESTÁ NA ZONA 1
 
         #check for colisions here
-        """if pygame.sprite.spritecollide(player, rocksU, False):
+        if pygame.sprite.spritecollide(player, rocksU, False):
             player.rect.y -= 75
             player.hp -= 1
             thumpSound.play()
@@ -307,7 +308,7 @@ while True:
         if pygame.sprite.spritecollide(player, rocksR, False):
             player.rect.x -= 75
             player.hp -= 1
-            thumpSound.play()"""
+            thumpSound.play()
 
         #inimigos a colidir com buracos e player############
         if pygame.sprite.spritecollide(stalker_1, rocksU, False):
@@ -420,6 +421,7 @@ while True:
         
         if yellowKeyZ2.exists == True:
             yellowKeyZ2.updateSprite()
+            screen.blit(doorZ2.lock,(458,20))
 
         plant2.update()
         #all_sprites2.draw(windowSurface)
@@ -432,7 +434,7 @@ while True:
     elif currentArea == 3:
         screen.fill(BLACK)
         
-    player.update(False) if currentArea != 3 else player.update(True)
+    player.update(False,menu) if currentArea != 3 else player.update(True,menu)
     
     pygame.display.flip()
     mainClock.tick(FPS)
