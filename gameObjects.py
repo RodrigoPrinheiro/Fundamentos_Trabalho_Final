@@ -47,10 +47,9 @@ class Door(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((150,150))
-        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.center = (-55, 170)
-
+        self.sprite = pygame.image.load("Sprites/obstacles/wall.png").convert_alpha()
 
 class Key(pygame.sprite.Sprite):
     def __init__(self,screen):
@@ -142,7 +141,7 @@ class Stalker(pygame.sprite.Sprite):
 
         self.rect = self.imageStill.get_rect()#tirar um rectangulo do sprite
         self.range = 350
-
+        
     def update(self,player,FPS):
         if player.rect.x >= self.rect.x -self.range and player.rect.x <= self.rect.x +self.range and player.rect.y >= self.rect.y -(self.range-(int(self.range/3))) and player.rect.y <= self.rect.y +(self.range-(int(self.range/3))):
             if player.rect.x<self.rect.x: #esquerda
@@ -237,12 +236,6 @@ class Shooter(pygame.sprite.Sprite):
         # Move the shots
         for b in self.shots: #change sides here (up down etc..)
                b['rect'].move_ip(self.directionX*b['speed'],self.directionY*b['speed'])
-               
-        # Delete shots went pass the limit or hit the player.
-        for b in self.shots[:]:
-            if b['rect'].top < 75 or b['rect'].left < 18 or player.rect.colliderect(b['rect']):
-                self.shots.remove(b)
-                self.shotHitWallSound.play()
 
         #render them shots
         #ANIMATION vvvvvvvvvvvvvvvv
@@ -264,7 +257,15 @@ class Shooter(pygame.sprite.Sprite):
         #collision
         for b in self.shots:
             if player.rect.colliderect(b['rect']):
-                print
+                player.hp-=1
+                print(player.hp)
+                
+        # Delete shots went pass the limit or hit the player.
+        for b in self.shots[:]:
+            if b['rect'].top < 75 or b['rect'].left < 18 or player.rect.colliderect(b['rect']):
+                self.shots.remove(b)
+                self.shotHitWallSound.play()
+                
 class Background(pygame.sprite.Sprite):
     def __init__(self,screen,FPS):
         pygame.sprite.Sprite.__init__(self)
