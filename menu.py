@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 pygame.init()
 
 WINDOWWIDTH = 1280
@@ -68,9 +68,11 @@ def buttons():
                 #play button
                 if playButton.isOver(pos):
                     print('click on start')
+                    break
                 #exit button
                 if exitButton.isOver(pos):
                     print('click on exit')
+                    break
             #hover over
             if event.type == pygame.MOUSEMOTION:
                 #play button
